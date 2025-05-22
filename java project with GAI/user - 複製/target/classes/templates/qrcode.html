@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="../../static/qrcode.css" th:href="@{/qrcode.css}"/>
+    <title>QRCode Page</title>
+    <script>
+        function removeQRCode() {
+            setTimeout(function() {
+                var qrCodeDiv = document.getElementById("qrCodeDiv");
+                if (qrCodeDiv) {
+                    qrCodeDiv.innerHTML = "";
+                }
+            }, 10000);  // 10秒後删除QR code
+        }
+
+        function submitForm() { // 提交表單 qrForm
+            document.getElementById("qrForm").submit();
+        }
+    </script>
+</head>
+<body>
+    <!-- 生成動態 QRCode 頁面，使用 Thymeleaf 模板引擎從後端獲取 QRCode 圖片的 URL 並顯示在頁面上，同時提供生成 QR Code 的表單。
+    JavaScript 用於自動移除 QR Code 圖片和提交表單 -->
+    <!-- Thymeleaf
+    th:if：根據條件動態顯示或隱藏元素。
+    th:src：設置圖片的 src 屬性。
+    th:text：設置元素的文本內容。
+    th:href：設置元素的 href 屬性 -->
+    <h1>Generate QR Code</h1>
+    <div id="qrCodeDiv" th:if="${qrCodeUrl != null}">
+        <h2>簽到 QR Code</h2>
+        <img th:src="${qrCodeUrl}" alt="QR Code" onload="removeQRCode()">
+    </div>
+    <div th:if="${error != null}">
+        <p th:text="${error}">Error generating QR Code</p>
+    </div>
+    <form id="qrForm" method="post" action="/qrcode">
+        <a href="javascript:void(0)" class="btn" onclick="submitForm()">
+            Generate
+            <span></span><span></span><span></span><span></span>
+        </a>
+    </form>
+</body>
+</html>

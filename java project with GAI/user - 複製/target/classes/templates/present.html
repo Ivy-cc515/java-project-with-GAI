@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Thymeleaf 模板引擎使用 -->
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head>
+    <meta charset="UTF-8">
+    <!-- Import CSS，使用 Thymeleaf 的 th:href 屬性來動態設置資源路徑 -->
+    <link rel="stylesheet" href="../../static/present.css" th:href="@{/present.css}"/>
+    <title>簽到管理</title>
+</head>
+<body>
+    <!-- 動態生成用戶簽到管理的頁面，使用 Thymeleaf 模板引擎從後端獲取用戶數據並展示在前端的表格中。每個用戶行都包含一個表單，以及可以進行補簽操作 -->
+    <h1>點名單</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Userid</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>signedIn</th>
+                <th>signInTime</th>
+                <th>signInCount</th>
+                <th>score</th>
+                <th>ipAddress</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Thymeleaf
+            th:each：迭代集合，用於生成表格行。
+            th:text：設置元素的文本內容。
+            th:href：設置元素的 href 屬性。
+            th:action：設置表單的提交路徑。
+            th:value：設置輸入框的值。 -->
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.userid}"></td>
+                <td th:text="${user.latitude}"></td>
+                <td th:text="${user.longitude}"></td>
+                <td th:text="${user.signedIn}"></td>
+                <td th:text="${user.signInTime}"></td>
+                <td th:text="${user.signInCount}"></td>
+                <td th:text="${user.score}"></td>
+                <td th:text="${user.ipAddress}"></td>
+                <td>
+                    <form method="post" th:action="@{/resign}">
+                        <input type="hidden" name="userid" th:value="${user.userid}" />
+                        <button type="submit">補簽</button>
+                    </form>
+                </td> <!-- 新增補簽到按鈕 -->
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

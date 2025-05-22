@@ -1,0 +1,137 @@
+html, body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+    margin-top: 25px;
+}
+
+body {
+    font-family: 標楷體;
+    background-color: #ffffcc;
+    padding: 20px;
+}
+
+h1 {
+    color: hsl(173, 100%, 19%);
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-shadow: 1px 0px 1px #333;
+}
+
+#weather {
+    color: hsl(173, 100%, 19%);
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
+    /* text-shadow: 1px 0px 1px #333; */
+}
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 2px solid #CCC;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"], button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid hsl(173, 100%, 19%);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: hsl(173, 100%, 19%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-style: inset;
+    border-width: 3.5px;
+    margin-top: 20px;
+    margin-bottom: -5px;
+}
+
+button:disabled {
+    background-color: #cccccc; /* 灰色背景 */
+    color: #666666; /* 深灰色文字 */
+    cursor: not-allowed; /* 更改鼠標指標為不允許的標誌 */
+}
+
+button:hover {
+    background-color: #0928c2;
+}
+
+#coordinates {
+    max-width: 524px;
+    margin-top: 10px;
+    margin-right: 8px;
+    text-align: center;
+    font-weight: 650;
+    padding: 8px;
+    background-color: #fff;
+    border: 2.5px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#location {
+    max-width: 524px;
+    margin-top: 10px;
+    margin-right: 8px;
+    text-align: center;
+    color: red;
+    font-weight: 800;
+    font-style: italic;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#successMessage {
+    max-width: 524px;
+    margin-top: 10px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 800;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#error {
+    max-width: 524px;
+    margin-top: 10px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 800;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); 
+    margin-left: auto;
+    margin-right: auto;
+}  
+
