@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="../../static/register.css" th:href="@{/register.css}"/>
+    <title>簽到</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* 設定網頁的字體為Arial, sans-serif */
+            margin: 20px; /* 設定體內文的外邊距為20px */
+        }
+    </style>
+</head>
+<!-- 在頁面加載時呼叫 getLocation 和 removeMessage 函數 -->
+<body onload="getLocation();"> 
+    <!-- 網頁標題和錯誤訊息顯示 -->
+    <h1 th:text="${name}"></h1>
+    <!-- Thymeleaf
+    th:text：設置元素的文本內容。
+    th:if：根據條件動態顯示或隱藏元素。
+    th:field：用於綁定表單字段與模型對象屬性 -->
+    <div id="weather">
+        <!-- Current Weather Status -->
+        <p id="weatherInfo">Loading weather...</p>
+    </div>
+    <div id="error" th:if="${error}">
+        <div th:text="${error}"></div>
+    </div>
+    <div id="successMessage" th:if="${successMessage}">
+        <div th:text="${successMessage}"></div>
+    </div>
+     <!-- 簽到表單，使用 POST 方法提交到 /register 路徑 -->
+     <form method="post" action="/register" th:object="${user}">
+        <!-- 簽到資料欄位 -->
+        <input type="text" id="userid" name="userid" placeholder="學號" th:field="*{userid}" />
+        <input type="text" id="username" name="username" placeholder="姓名" th:field="*{username}" />
+        <input type="hidden" id="latitude" name="latitude" th:field="*{latitude}" />
+        <input type="hidden" id="longitude" name="longitude" th:field="*{longitude}" />
+        <!-- 問題測試欄位 -->
+        <div th:if="${question != null}">
+            <h2>題號: <span th:text="${question.number}"></span></h2>
+            <p th:text="${question.question}"></p>
+            <input type="radio" name="selectedAnswer" th:value="'A'" id="optionA" />
+            <label for="optionA"><span>A.</span> <span th:text="${question.optionA}"></span></label><br />
+            <input type="radio" name="selectedAnswer" th:value="'B'" id="optionB" />
+            <label for="optionB"><span>B.</span> <span th:text="${question.optionB}"></span></label><br />
+            <input type="radio" name="selectedAnswer" th:value="'C'" id="optionC" />
+            <label for="optionC"><span>C.</span> <span th:text="${question.optionC}"></span></label><br />
+            <input type="radio" name="selectedAnswer" th:value="'D'" id="optionD" />
+            <label for="optionD"><span>D.</span> <span th:text="${question.optionD}"></span></label><br />
+        </div>
+        <button type="submit" id="submitButton">簽到</button>
+    </form>
+    <div id="coordinates"></div>  <!-- 新增用來顯示經緯度的元素 -->
+    <div id="location">Waiting for geolocation...</div>
+
+    <!-- JavaScript for Geolocation -->
+    <script>
+        // 目標地點緯度和經度設定
+        const targetLatitude = 23.464779259166487;         //23.464781524251705; //23.464751884633117;        //全家23.46373476079721;  // 特定地點的緯度
+        const targetLongitude = 120.441248359288352;       //120.441275990125121; //120.44117955869456;      //全家120.4364928149119; // 特定地點的經度
+        const allowedDistance = 15; // 允許的最大距離範圍（米）
+
+        // 獲取位置信息的函數
+        function getLocation() {
+            document.getElementById("submitButton").disabled = true; // 禁用簽到按鈕
+            if (navigator.geolocation) {
+                // 使用 HTML5 Geolocation API 獲取用戶的當前位置
+                navigator.geolocation.getCurrentPosition(showPosition, showError, {enableHighAccuracy: true});
+            } else { 
+                document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        // 位置獲取成功時調用的函數
+        function showPosition(position) {
+            const latitude = position.coords.latitude.toFixed(15);
+            const longitude = position.coords.longitude.toFixed(15);
+            const distance = calculateDistance(latitude, longitude, targetLatitude, targetLongitude);
+            // 判斷是否在允許的範圍內並更新頁面信息
+            if (distance <= allowedDistance) { // 如果在允許範圍
+                document.getElementById("location").innerHTML = "★☆ 恭喜老爺賀喜夫人，您在簽到範圍內！☆★";
+                document.getElementById("submitButton").disabled = false; // 啟用簽到按鈕
+            } else {
+                document.getElementById("location").innerHTML = "★☆ 如果簽到成功...可惜沒如果：) ☆★";
+            }
+            document.getElementById("coordinates").innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude; // 顯示經緯度
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+        }
+
+        // 計算兩地點間距離的函數，使用 Haversine 公式計算兩地點間的距離
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            function toRadians(degrees) { 
+                return degrees * Math.PI / 180;
+            }
+            var R = 6371e3; // 地球半徑（米）
+            var φ1 = toRadians(lat1);
+            var φ2 = toRadians(lat2);
+            var Δφ = toRadians(lat2-lat1);
+            var Δλ = toRadians(lon2-lon1);
+
+            var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            return R * c; // 返回距離值單位為米
+        }
+
+        // 當位置獲取失敗時調用的函數
+        function showError(error) {
+            let errorMessage = ""; // 用餘處存錯誤信息的變數
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMessage = "An unknown error occurred.";
+                    break;
+            }
+            document.getElementById("location").innerHTML = errorMessage; // 顯示錯誤信息
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        // Function to fetch and display weather info
+        function fetchWeather() {
+            // Current date and time
+            var now = new Date();
+            var formattedDateTime = now.getFullYear() + '-' +
+                ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+                ('0' + now.getDate()).slice(-2) + ' ' +
+                ('0' + now.getHours()).slice(-2) + ':' +
+                ('0' + now.getMinutes()).slice(-2) + ':' +
+                ('0' + now.getSeconds()).slice(-2);
+            
+            // Encode the date time for URL query
+            var encodedDateTime = encodeURIComponent(formattedDateTime);
+
+            // API URL with encoded date time
+            var apiUrl = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-057?' +
+                'Authorization=CWA-A2A89205-5E4E-4807-9CF4-9977030EAA69&' +
+                'limit=1&' +
+                'format=JSON&' +
+                'locationName=%E5%98%89%E7%BE%A9%E5%B8%82,%E8%A5%BF%E5%8D%80&' +
+                'elementName=WeatherDescription&' +
+                'sort=time&' +
+                'time=' + encodedDateTime;
+
+            // Make a GET request to fetch weather data
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Find the weather information for the current time
+                    var weatherInfo = data.records.locations[0].location[0].weatherElement[0].time.find(entry => {
+                        return formattedDateTime >= entry.startTime && formattedDateTime < entry.endTime;
+                    });
+
+                    // Extract relevant weather data
+                    var weatherDescription = weatherInfo.elementValue[0].value.split('。')[0]; // 多雲
+                    var rainfallProbability = weatherInfo.elementValue[0].value.match(/降雨機率 (\d+)%/)[0]; // 降雨機率 20%
+                    var temperature = weatherInfo.elementValue[0].value.match(/溫度攝氏(\d+)度/)[0]; // 溫度攝氏31度
+
+                    // Display the weather information
+                    var weatherText = weatherDescription + '，' + rainfallProbability + '，' + temperature + '！';
+                    document.getElementById('weatherInfo').textContent = weatherText;
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                    document.getElementById('weatherInfo').textContent = 'Failed to fetch weather data.';
+                });
+        }
+
+        // Call fetchWeather function initially
+        fetchWeather();
+
+        // Refresh weather every 3 hours
+        setInterval(fetchWeather, 3 * 60 * 60 * 1000); // Refresh every 3 hours (in milliseconds)
+    </script>
+</body>
+</html>

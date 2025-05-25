@@ -1,0 +1,101 @@
+html, body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #ffffcc;
+    font-family: 標楷體;
+    text-align: center;
+}
+
+h1 {
+    color: hsl(173, 100%, 19%);
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+#qrCodeContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+#qrCodeDiv img {
+    max-width: 250px; 
+    height: 250px;
+}
+
+.btn {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    min-width: 50px;
+    background: #FFFFFF;
+    border: 2px solid hsl(173, 65%, 54%);
+    border-radius: 8px;
+    color: hsl(173, 64%, 39%);
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    overflow: hidden;
+    transition: 0.5s;
+    padding: 10px 20px;
+    letter-spacing: 0.3em;
+    margin-top: 20px; 
+}
+
+.btn span {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    background-color: hsl(173, 64%, 39%);
+    transform: translateY(150%);
+    border-radius: 50%;
+    left: calc((var(--n) - 1) * 25%);
+    transition: 0.5s;
+    transition-delay: calc((var(--n) - 1) * 0.1s);
+    z-index: -1;
+}
+
+.btn:hover,
+.btn:focus,
+.btn.active {
+    color: rgb(255, 255, 255);
+}
+
+.btn:hover span,
+.btn:focus span,
+.btn.active span {
+    transform: translateY(0) scale(2);
+}
+
+.btn span:nth-child(1) {
+    --n: 1;
+}
+
+.btn span:nth-child(2) {
+    --n: 2;
+}
+
+.btn span:nth-child(3) {
+    --n: 3;
+}
+
+.btn span:nth-child(4) {
+    --n: 4;
+}
